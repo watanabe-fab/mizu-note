@@ -9,9 +9,9 @@ import com.watanabefactory.repository.entity.User;
 @Mapper
 public interface UserMapper {
 
-	@Select("select id, email, password, max_water_usage from user where id = #{userId}")
+	@Select("select id, email, password, max_water_usage from users where id = #{userId}")
 	User findByPk(Integer userId);
 
-	@Update("update user set max_water_usage = #{maxWaterUsage}")
+	@Update("update users set max_water_usage = #{maxWaterUsage}")
 	void updateMaxWaterUsage(Integer maxWaterUsage);
 }
