@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  title: 水分摂取量管理API
+  description: 水分摂取量を管理するアプリケーションのAPI仕様
+  version: 1.0.0
+paths:
+  /water-usage:
+    get:
+      summary: 取水量の取得
+      description: 指定したユーザの当日の取水量や関連情報を取得します。
+      parameters:
+        - name: userId
+          in: query
+          description: ユーザID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 取水量の取得結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dailyWaterUsage:
+                    type: integer
+                    description: その日の取水量
+                  maxWaterUsage:
+                    type: integer
+                    description: 取水量の上限
+                  dailyUsageDetails:
+                    type: array
+                    description: 登録した当日の取水量の一覧
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: integer
+                          description: 登録された取水量
+                        timestamp:
+                          type: string
+                          format: date-time
+                          description: 登録日時
+    post:
+      summary: 取水量の登録
+      description: 新しい取水量を登録します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: 登録する取水量
+                  example: 250
+      responses:
+        '201':
+          description: 登録成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 登録結果
+                  message:
+                    type: string
+                    description: 登録メッセージ
+  /settings:
+    put:
+      summary: 設定の更新
+      description: ユーザの取水量上限を更新します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                maxWaterUsage:
+                  type: integer
+                  description: 新しい取水量の上限
+                  example: 2000
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 更新結果
+                  message:
+                    type: string
+                    description: 更新メッセージ
