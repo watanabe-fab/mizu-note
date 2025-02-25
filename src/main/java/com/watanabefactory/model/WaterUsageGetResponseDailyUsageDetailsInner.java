@@ -17,10 +17,32 @@ import jakarta.validation.Valid;
 @JsonTypeName("_water_usage_get_200_response_dailyUsageDetails_inner")
 public class WaterUsageGetResponseDailyUsageDetailsInner {
 
+  private Integer id;
+
   private Integer amount;
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime timestamp;
+
+  public WaterUsageGetResponseDailyUsageDetailsInner id(Integer id) {
+    this.id = id;
+    return this;
+  }
+
+  /**
+   * 登録されたID
+   * 
+   * @return id
+   */
+
+  @JsonProperty("id")
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
   public WaterUsageGetResponseDailyUsageDetailsInner amount(Integer amount) {
     this.amount = amount;
@@ -29,9 +51,10 @@ public class WaterUsageGetResponseDailyUsageDetailsInner {
 
   /**
    * 登録された取水量
+   * 
    * @return amount
    */
-  
+
   @JsonProperty("amount")
   public Integer getAmount() {
     return amount;
@@ -48,9 +71,10 @@ public class WaterUsageGetResponseDailyUsageDetailsInner {
 
   /**
    * 登録日時
+   * 
    * @return timestamp
    */
-  @Valid 
+  @Valid
   @JsonProperty("timestamp")
   public OffsetDateTime getTimestamp() {
     return timestamp;
@@ -99,4 +123,3 @@ public class WaterUsageGetResponseDailyUsageDetailsInner {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

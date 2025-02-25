@@ -26,13 +26,13 @@ import jakarta.validation.constraints.NotNull;
 
 @RestController
 public class MizunoteController {
-	
+
 	private MizunoteService mizunoteService;
 
 	public MizunoteController(MizunoteService mizunoteService) {
 		this.mizunoteService = mizunoteService;
 	}
-	
+
 	/**
 	 * 取水量の取得
 	 * 指定したユーザの当日の取水量や関連情報を取得します。
@@ -40,60 +40,62 @@ public class MizunoteController {
 	 * @param userId
 	 * @return {@see WaterUsageGet200Response} 取水量の取得結果
 	 */
-	@GetMapping( value = "/water-usage", produces = { "application/json" })
-	ResponseEntity<WaterUsageGetResponse> getWaterUsage(@NotNull @Valid @RequestParam(value = "userId", required = true) Integer userId) {
+	@GetMapping(value = "/water-usage", produces = { "application/json" })
+	ResponseEntity<WaterUsageGetResponse> getWaterUsage(
+			@NotNull @Valid @RequestParam(value = "userId", required = true) Integer userId) {
 		final DashBoardDto dto = mizunoteService.getWaterUsage(userId);
-		
+
 		if (dto.maxWaterUsage() < 0) {
 			return ResponseEntity.notFound().build();
 		}
-		
-		
-		final WaterUsageGetResponse response =  new WaterUsageGetResponse();
+
+		final WaterUsageGetResponse response = new WaterUsageGetResponse();
 		response.setDailyWaterUsage(dto.dailyWaterUsage());
 		response.setMaxWaterUsage(dto.maxWaterUsage());
 		response.setDailyUsageDetails(
 				dto.waterDailyUsages().stream()
-					.map(item -> {
-						final var model = new WaterUsageGetResponseDailyUsageDetailsInner();
-						model.amount(item.amount());
-						model.timestamp(item.updatedAt());
-						return model;
-					})
-					.collect(Collectors.toList())
-				);
-		
+						.map(item -> {
+							final var model = new WaterUsageGetResponseDailyUsageDetailsInner();
+							model.id(item.id());
+							model.amount(item.amount());
+							model.timestamp(item.updatedAt());
+							return model;
+						})
+						.collect(Collectors.toList()));
+
 		return ResponseEntity.ok().body(response);
 	}
-	
+
 	/**
 	 * 取水量の登録
 	 * 新しい取水量を登録します。
+	 * 
 	 * @param waterUsagePostRequest
 	 * @return
 	 */
-    @PostMapping(value = "/water-usage", produces = { "application/json" }, consumes = { "application/json" })
-    ResponseEntity<WaterUsagePost201Response> postWaterUsage(@Valid @RequestBody WaterUsagePostRequest waterUsagePostRequest) {
-    	final var dto = new RegisterWaterUsageDto(
-    						waterUsagePostRequest.getUserId(), 
-			    			waterUsagePostRequest.getAmount()
-		    			);
-    	
-    	mizunoteService.registerWaterUsage(dto);
-    	
-    	return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+	@PostMapping(value = "/water-usage", produces = { "application/json" }, consumes = { "application/json" })
+	ResponseEntity<WaterUsagePost201Response> postWaterUsage(
+			@Valid @RequestBody WaterUsagePostRequest waterUsagePostRequest) {
+		final var dto = new RegisterWaterUsageDto(
+				waterUsagePostRequest.getUserId(),
+				waterUsagePostRequest.getAmount());
+
+		mizunoteService.registerWaterUsage(dto);
+
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
 
 	/**
 	 * 設定の更新
 	 * ユーザの取水量上限を更新します。
+	 * 
 	 * @param settingsPutRequest
 	 * @return
 	 */
 	@PutMapping(value = "/settings", produces = { "application/json" }, consumes = { "application/json" })
 	ResponseEntity<SettingsPut200Response> putSettings(@Valid @RequestBody SettingsPutRequest settingsPutRequest) {
 		mizunoteService.updateSetttings(settingsPutRequest.getMaxWaterUsage());
-		
+
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }
