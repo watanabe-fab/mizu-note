@@ -17,6 +17,8 @@ import com.watanabefactory.model.WaterUsageGetResponse;
 import com.watanabefactory.model.WaterUsageGetResponseDailyUsageDetailsInner;
 import com.watanabefactory.model.WaterUsagePost201Response;
 import com.watanabefactory.model.WaterUsagePostRequest;
+import com.watanabefactory.model.WaterUsagePut200Response;
+import com.watanabefactory.model.WaterUsagePutRequest;
 import com.watanabefactory.service.MizunoteService;
 import com.watanabefactory.service.MizunoteService.DashBoardDto;
 import com.watanabefactory.service.MizunoteService.RegisterWaterUsageDto;
@@ -83,6 +85,24 @@ public class MizunoteController {
 		mizunoteService.registerWaterUsage(dto);
 
 		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+
+	/**
+	 * 取水量の更新
+	 * 登録済みの取水量を更新します。
+	 * 
+	 * @param waterUsagePutRequest
+	 * @return
+	 */
+	@PutMapping(value = "/water-usage", produces = { "application/json" }, consumes = { "application/json" })
+	ResponseEntity<WaterUsagePut200Response> putWaterUsage(
+			@Valid @RequestBody WaterUsagePutRequest waterUsagePutRequest) {
+		mizunoteService.updateWaterUsage(
+				waterUsagePutRequest.getUserId(),
+				waterUsagePutRequest.getWaterUsageId(),
+				waterUsagePutRequest.getAmount());
+
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	/**

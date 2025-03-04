@@ -70,6 +70,42 @@ paths:
                   message:
                     type: string
                     description: 登録メッセージ
+    put:
+      summary: 取水量の更新
+      description: 登録済みの取水量を更新します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  description: ユーザID
+                  example: 1
+                waterUsageId:
+                  type: integer
+                  description: 更新対象の取水量ID
+                  example: 1
+                amount:
+                  type: integer
+                  description: 更新する取水量
+                  example: 250
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 更新結果
+                  message:
+                    type: string
+                    description: 登録メッセージ
   /settings:
     put:
       summary: 設定の更新
